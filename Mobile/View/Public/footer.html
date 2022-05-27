@@ -1,0 +1,74 @@
+<div class="container-fluid footer clearfix">
+    <div><a href="{:U('Index/index')}"><span class="glyphicon glyphicon-home <eq name="CONTROLLER_NAME" value="Index"> current</eq>"></span><p class="text-center <eq name="CONTROLLER_NAME" value="Index"> current</eq>">首页</p></a></div>
+    <div><a href="{:U('Mgcount/index')}"><span class="glyphicon glyphicon-stats <eq name="CONTROLLER_NAME" value="Mgcount"> current</eq>"></span><p class="text-center <eq name="CONTROLLER_NAME" value="Mgcount"> current</eq>">统计</p></a></div>
+    <div><a href="{:U('Order/index')}"><span class="glyphicon glyphicon-inbox <eq name="CONTROLLER_NAME" value="Order"> current</eq>"></span><p class="text-center <eq name="CONTROLLER_NAME" value="Order"> current</eq>">订单</p></a></div>
+    <div class="dropup">
+        <a id="dLabel" class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span><p class="text-center">管理员</p></a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">超级管理员</a></li>
+            <li><a href="{:U('Login/login_out')}">退出</a></li>
+        </ul>
+    </div>
+</div>
+<link rel="stylesheet" href="__PUBLIC__/mobile/css/datetimepicker_blue.css">
+<script src="__PUBLIC__/mobile/js/bootstrap-datetimepicker.min.js"></script>
+<script src="__PUBLIC__/mobile/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function(){
+        function show(){
+            var mydate = new Date();
+            var str = "" + mydate.getFullYear() + "/";
+            str += (mydate.getMonth()+1) + "/";
+            if (mydate.getDate().toString().length===1){
+                str += "0" + mydate.getDate();
+            }else{
+                str += mydate.getDate();
+            }
+            return str;
+        }
+        $(".start_time,.end_time").val();
+        $(".time>div>input").click(function () {
+           $(this).addClass('btn-danger');
+           $(this).parent().siblings().find('input').removeClass('btn-danger');
+        });
+        $(".timebox").hide();
+        var time_click=0;
+       $(".custom").click(function (e) {
+           time_click++;
+           e.stopPropagation();//阻止冒泡到body
+           if (time_click===1){
+               $(".timebox").fadeIn();
+           }
+           if (time_click===2){
+               $(".timebox").fadeOut();
+               time_click=0;
+           }
+       });
+        $(" body").click(function(){
+            $(".timebox").fadeOut();
+            time_click=0;
+        });
+        $(".timebox").click(function (e) {
+            e.stopPropagation();//阻止冒泡到body
+        });
+        $('.start_time').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+        $('.end_time').datetimepicker({
+            pickerPosition:"bottom-left",
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd',//显示格式
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+    })
+</script>
+</body>
+</html>

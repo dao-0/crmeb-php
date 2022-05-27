@@ -1,0 +1,36 @@
+<include file="Public/header"/>
+	<form action="" method="post" role="form" name="form1" onsubmit="return check();">
+		<input type="hidden" name="id" value="{$admins.id}"/>
+		<div class="form-group">
+			<label for="gonghao">账号<small>(工号)</small>:</label>
+		    <input type="text" class ="form-control" name="username" value="{$admins.username}"/>
+		</div>
+		<div class="form-group">
+			<label for="nickname">姓名:</label>
+		    <input type="text" class ="form-control" name="nickname" value="{$admins.nickname}"/>
+		</div>
+		<div class="form-group">
+			<label for="password">密码:</label>
+		    <input type="password" class ="form-control" name="password" id="password"/>
+		</div>
+		<input type="submit" value="确定" class="btn btn-default"/>
+	</form>
+	<script>
+	    function check(){
+			var x=document.forms["form1"]["password"].value;
+			if (x==null || x=="")
+		 	 {
+		 		 alert("密码为空");
+		 		 return false;
+		 	 }
+			 
+			var y=document.forms["form1"]["nickname"].value;
+			if (y==null || y=="")
+		 	 {
+		 		 alert("姓名为空");
+		 		 return false;
+		 	 }
+		}
+	</script>		
+</body>
+</html>

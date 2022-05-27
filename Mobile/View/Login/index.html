@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>嘿果餐饮管理系统</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script> -->
+    <style>
+        body {
+            padding-top: 100px;
+            background-color: #eee;
+        }
+        .navbar-fixed-top {
+            border: 0;
+            background: #222 url(/ms-icon-70x70.png) no-repeat center center;
+            background-size: auto 70%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container text-center">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="#">嘿果餐饮管理系统</a></div></div></nav>
+    <h1>嘿果餐饮管理系统</h1>
+    <p id="wxprcode"><img src="__PUBLIC__/admin/img/logo3.png" height="200" /></p>
+    <!-- <script type="text/javascript">
+        var appid = '{$LoginArr.appid}';
+        var obj = new WxLogin({
+          id:"wxprcode", 
+          appid: "{$LoginArr.appid}", 
+          scope: "{$LoginArr.scope}", 
+          redirect_uri: "{$LoginArr.logcallback}",
+          state: "{$LoginArr.state}",
+          style: "",
+          href: ""
+        });
+    </script> -->
+    <form method="post" action="{:U('Login/index')}">
+        <div style="height: 300px;">
+            <h3>管理员登录</h3>
+			
+			店铺号：<input type="text" name="shop_id" value="{:cookie('shop_id')}"/> </br></br>
+            
+            帐&nbsp;&nbsp;&nbsp;号：<input type="text" name="username" /></br></br>
+            
+            密&nbsp;&nbsp;&nbsp;码：<input type="password" name="password" /></br></br>
+            
+            <button>登录</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

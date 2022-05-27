@@ -1,0 +1,12 @@
+<div class="header container-fluid">
+    <div class="text-center content row">
+        <div class="col-xs-3 text-left logo"><img src="/Uploads/{$_SESSION['back_shop']['logo']}" alt=""></div>
+        <div class="col-xs-9"><h1 class="text-center header_bt">{$_SESSION['back_shop']['name']}餐饮管理系统</h1></div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var line_height = $(".logo>img").height();
+                $(".header_bt").css({'line-height':line_height+'px','margin-top':0});
+            });
+        </script>
+    </div>
+</div>

@@ -1,0 +1,338 @@
+<include file="Public/header" />
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div id="" class="col-md-3 col-lg-2 sidebar">
+            <div class="panel panel-default" style="height: 90%;">
+                <div class="panel-heading">
+                    <span class="h2">{$tab.tab_num}<small> 号桌 结账</small></span>
+					<?php $auth=json_decode($_SESSION['user']['auth'],true);if(in_array(2,$auth)||in_array(0,$auth)){ ?>
+                    <a class="btn btn-danger btn-sm pull-right tuicai" data-order_id="{$order_id}" data-tab_id="{$tab.id}">退菜</a>
+					<?php } ?>
+                </div>
+                <div style="height: 90%; overflow-y: scroll;">
+                    <table class="table" id="menu_list">
+                        <thead>
+                        <th>菜品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        </thead>
+                        <tbody>
+					<volist name="order_menu" id="vo">
+                        <tr class="menu_item" data-menu_id="0" data-menu_price="0">
+                            <td><div class="menu_title">{$vo.name}</div></td>
+                            <td><div class="menu_price">{$vo.price}</div></td>
+                            <td><div class="menu_count">{$vo.num}</div></td>
+                        </tr>
+					</volist>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="">
+                <button class="btn btn-info btn-lg btn-block">总价 <span class="">&yen; <span id="total_menu_price">{$count}</span></span></button>
+            </div>
+        </div>
+
+        <div class="col-md-9 col-md-offset-3 col-lg-offset-2 main">
+
+            <div class="col-md-8 col-lg-8">
+                <form method="post" action="{:U('Order/subcheck')}">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                        <h2><span class="col-md-3 col-lg-3">应收金额</span>
+                        <input type="tel" name="" id="pay" value="{$count}" class="text-right" size="15" readonly="readonly" disabled="disabled" /></h2>
+                            <div class="clearfix"></div>
+                            <h2><span class="col-md-3 col-lg-3">实收金额</span>
+                            <input type="tel" name="paid" value="{$count}" class="text-right" size="15" readonly="readonly"/>
+                           <!-- <input type="tel" name="discount" id="discount" value="100" class="text-right" size="2" />% -->
+							 <select name="discount" class="discount" class="text-right" >
+									<option value ="10">无折扣</option>
+							 <volist name="discount" id="vo">
+								<option value ="{$vo.discount}" data-type="{$vo.type}" data-name="{$vo.name}">{$vo.name}<if condition="$vo['discount'] eq ''"><else/>({$vo.discount}折)</if> </option>
+							 </volist>
+							</select>
+                        </h2></div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-body">
+                            <h2><span class="col-md-3 col-lg-3">收到<span id="pay_method_title">现金</span></span>
+                                <input type="tel" name="cash" value="{$count}" class="text-right" size="15" /></h2></div>
+                    </div>
+                    <div class="panel panel-info">
+                        <div class="panel-body">
+                            <h2><span class="col-md-3 col-lg-3">找零</span>
+                                <input type="tel" name="change" value="0" class="text-right" size="15" readonly="readonly" /></h2></div>
+                    </div>
+					 <div class="panel panel-info">
+                        <div class="panel-body">
+                            <h2><span class="col-md-3 col-lg-3">备注</span>
+                                <textarea name="remark" rows="1" id="txt-remark" /></textarea></h2>
+                            <!-- <span class="col-md-3 col-lg-3"></span> -->
+                            <!-- <a class="btn btn-default btn-remark">股东折</a> -->
+                            <!-- <a class="btn btn-default btn-remark">员工折</a> -->
+                            <!-- <a class="btn btn-default btn-remark">抵用券/活动</a> -->
+                            <!-- <a class="btn btn-default btn-remark">公司账</a> -->
+                            <!-- <a class="btn btn-default btn-remark">抹零</a> -->
+                        </div>
+						
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog  modal-sm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+										</button>
+										<h4 class="modal-title" id="myModalLabel">
+											请输入抹零金额
+										</h4>
+									</div>
+									<div class="modal-body">
+										<input type="text" name="free" class="form-control" />
+									</div>
+									<div class="modal-footer">
+										<!-- <button type="button" class="btn btn-default" data-dismiss="modal"> -->
+											<!-- 关闭 -->
+										<!-- </button> -->
+										<button type="button" class="btn btn-primary sure">
+											确认抹零
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+                    </div>
+                    <div class="">
+                        <button class="btn btn-success btn-lg btn-block subprint" data-order_id="{$order_id}" >
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 确认
+                            <div class="small">结账完毕</div>
+                        </button>
+						<hr  />
+						<a type="button" class="btn btn-danger btn-block" onclick="history.go(-1)">返回</a>
+                        <!--<hr />-->    <!-- href="{:U('Order/printer?order_id='.$order_id)}"-->
+                    </div>
+                    <input type="hidden" name="pay_method" value="1" />
+                    <input type="hidden" name="order_id" value="{$order_id}" />
+					
+                </form>
+            </div>
+
+            <div class="col-md-4 col-lg-2">
+                <h3>打印小票</h3>
+                <p><a class="btn btn-warning btn-block btn-lg printer"  data-order_id="{$order_id}">打印小票</a></p>
+                <hr />
+                <h3>支付方式</h3>
+                <ul class="nav nav-pills " role="tablist" id="pay_method">
+                    <li role="presentation" class="active"><a href="#pay1" role="tab" data-toggle="tab" data-pay_method="1">现金</a></li>
+                    <li role="presentation"><a href="#pay2" role="tab" data-toggle="tab" data-pay_method="2">刷卡</a></li>
+                    <li role="presentation"><a href="#pay3" role="tab" data-toggle="tab" data-pay_method="5">扫码</a></li>
+                    <!--<li role="presentation"><a href="#pay4" role="tab" data-toggle="tab" data-pay_method="4">微信</a></li>-->
+                </ul>
+				<!-- 好事成双活动 -->
+<!-- 				<style type="text/css">
+					.check_box{
+					    border: 1px solid #ccc;
+					    border-radius: 4px;
+					    padding: 5px;
+					    height: 140px;
+					    margin-top:10px;
+					}
+					.check{
+				        width: 100%;
+					    background: #bc2923;
+					    color: white;
+					    border-radius: 4px;
+					    text-align: center;
+					    margin-top: 10px;
+					    padding: 6px 0;
+					    font-size: 20px;
+					    cursor: pointer; 
+					}
+					#code{
+				        width: 98%;
+					    font-size: 17px;
+					    margin: auto;
+					    margin-top: 7px;
+					}
+					.check_code p{
+						margin-top: 5px;
+						font-size: 24px;
+						text-align: center;
+						display: none;
+					}
+				</style>
+				<div class="check_box">
+	                <form action="" method="" >
+						<input id="code" type="text" value="" name="code" placeholder="请输入兑换码" />
+					</form>
+					<div class="check">验证</div>
+					<div class="check_code">
+						<p id="code_fir">验证成功</p>
+						<p id="code_sec">验证失败</p>
+						<p id="code_thr">此券已使用</p>
+					</div>
+				</div> -->
+            </div>
+	
+		
+        </div>
+
+    </div>
+</div>
+
+<script>
+$('#code').keyup(function(){
+	if($(this).val()==''){
+		$('.check_code p').hide();
+	}
+})
+//验证兑换码
+	$('.check').click(function(){
+		code = $('#code').val();
+		$.ajax({
+			url:'{:U("Order/check_code")}',
+			data:'code='+code,
+			type:'post',
+			success:function(msg){
+				if(msg=='0'){
+					$('#code_thr').show().siblings().hide().css('color','#4d4d4d');
+				}else if(msg=='1'){
+					$('#code_fir').show().siblings().hide().css('color','red');
+				}else{
+					$('#code_sec').show().siblings().hide().css('color','#4d4d4d');
+				}
+			}
+		})
+	})
+
+    $("#pay_method li a").click(function () {
+        var v=$(this).data("pay_method");
+        var t=$(this).text();
+        $("input[name='pay_method']").val(v);
+        $("#pay_method_title").text($(this).text());
+
+        $("input[name='cash']").focus(focustext).select();
+    });
+
+    $("input").on("change keyup blur", function () {
+        calc_change();
+    });
+    $("input").on("focus", function () {
+        $(this).select();
+    });
+
+    $(document).ready(function () {
+        $("input[name='cash']").select().focus(focustext);
+    });
+
+    function calc_change(){
+        var paid=parseFloat($("input[name='paid']").val());
+        var cash=parseFloat($("input[name='cash']").val());
+        var change=cash-paid;
+        $("input[name='change']").val(change.toFixed(2));
+    }
+
+
+    function focustext() {
+        var input = this;
+        setTimeout(function () {
+            input.selectionStart = 0;
+            input.selectionEnd = input.val().length;
+        },100);
+    }
+	
+	$(".printer").click(function(){
+		var order_id=$(this).data("order_id");
+		var paid=$("input[name='paid']").val();
+		var remark=$("#txt-remark").val();
+		$.ajax({
+			type:'post',
+			url:'{:U('Order/printer')}',
+			data:'order_id='+order_id+'&paid='+paid+"&remark="+remark,
+			success:function(msg){
+			//将后台取得值转换成js对象
+				//var objArr=eval('('+msg+')');
+				//alert(msg);
+			}
+		});
+	});
+
+    $(".btn-remark").click(function () {
+        $("#txt-remark").val($(this).text());
+    });
+	
+	$(".tuicai").click(function(){
+		var order_id=$(this).data("order_id");
+		var tab_id=$(this).data("tab_id");
+		location.href="{:U('Order/tuicai')}?order_id="+order_id+"&tab_id="+tab_id;
+	});
+	
+	$(document).on('click','.sure',function(){
+		var paid=$("#pay").val();
+		var free=$("input[name='free']").val();
+		var abit=paid%10;
+		if(free>9 || free<0 || free>abit){
+			alert("抹零金额只能是0-9,并且要小于实收金额的个位数");
+			return false;
+		}else{
+			update_paid=paid-free;
+			$("input[name='paid']").val(update_paid);
+			var cash=$("input[name='cash']").val();
+			var change=(cash-update_paid).toFixed(2);
+			$("input[name='change']").val(change);
+			$("#myModal").modal("hide");
+		}
+	}); 
+	
+	$(".discount").change(function(){
+		var paid=$("#pay").val();
+		var discount=($(this).val())/10;
+		var type=$(this).find('option:selected').data("type");
+		var update_paid=paid;
+		var name=$(this).find("option:selected").data("name");
+		
+		if(type==0){
+            var abit=paid%10;
+			$("input[name='paid']").attr("readonly","readonly");
+			$("#myModal").modal("show");
+			$("#myModal").on('shown.bs.modal',function(){
+                $("input[name='free']").val(abit).focus(focustext).select();
+			});
+		}else if(type==2){
+			$("input[name='paid']").removeAttr("readOnly").focus(focustext).select();
+		}else{
+			$("input[name='paid']").attr("readonly","readonly");
+			update_paid=(paid*discount).toFixed(0);
+		}
+		$("input[name='paid']").val(update_paid);
+		var cash=$("input[name='cash']").val();
+		var change=(cash-update_paid).toFixed(2);
+		$("input[name='change']").val(change);
+		$("textarea[name='remark']").val(name);
+	});
+	
+	$(".subprint").click(function(){
+		if(confirm("请确认已结账,并且打印小票")){
+			var order_id=$(this).data("order_id");
+			var paid=$("input[name='paid']").val();
+			var remark=$("#txt-remark").val();
+			$.ajax({
+				type:'post',
+				url:'{:U('Order/printer')}',
+				data:'order_id='+order_id+'&paid='+paid+"&remark="+remark,
+				success:function(msg){
+					if(msg!=1){
+						alert("打印失败 "+msg);
+					}
+				}
+			});
+		}else{
+			return false;
+		}
+	});
+</script>
+
+</body>
+</html>

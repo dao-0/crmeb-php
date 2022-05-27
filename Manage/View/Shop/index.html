@@ -1,0 +1,33 @@
+<include file="Public/header"/>
+<a href="{:U('Shop/add')}" class="btn btn-default"/>添加</a> </br></br>
+	<table class="table table-bordered table-hover">
+		<tr>
+			<th>店铺id</th>		
+			<th>店名</th>
+			<th>联系人</th>
+			<th>联系电话</th>
+			<th>地址</th>
+			<th>店铺介绍</th>
+			<th>备注</th>
+			<th>操作</th>		
+		</tr>
+		<volist name="shop" id="vo">
+		    <tr>
+		    	<td>{$vo.shop_id}</td>
+		    	<td>{$vo.name}</td>
+		    	<td>{$vo.username}</td>
+		    	<td>{$vo.phone}</td>
+		    	<td>{$vo.address}</td>
+		    	<td>{$vo.intro}</td>
+		    	<td>{$vo.remark}</td>
+				<td>
+					<a href="{:U('Shop/editAdmin?aid='.$vo['aid'])}" />设置管理员账号</a>
+					<a href="{:U('Shop/del',array('shop_id'=>$vo['shop_id'],'aid'=>$vo['aid']))}" onclick="return confirm('是否删除？')"/>删除</a>&emsp;&emsp;
+				</td>				
+		    </tr>   
+		</volist>		
+	</table>
+</body>
+</html>
+
+

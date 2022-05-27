@@ -1,0 +1,252 @@
+<include file="Public/header"/>
+
+<style>
+	.panel-success .panel-heading{
+		background-color: #67b252;
+		color: #FFF;
+	}
+	.panel-warning .panel-heading{
+		background-color: #ffa821;
+		color: #FFF;
+	}
+	.panel-danger .panel-heading{
+		background-color: #ff412c;
+		color: #FFF;
+	}
+	small{
+		color: inherit !important;
+	}
+
+</style>
+
+<div class="container-fluid">
+    <div class="row main">		
+		<volist name="tab" id="vo">
+			<?php $c=0; ?>
+		<if condition="$vo['state'] gt 1">
+		    
+			<volist name="order" id="v">
+			<if condition="$vo['id'] eq $v['tab_id']">
+			<?php $c++; ?>
+				<div class="col-md-3 col-lg-2 ">
+				<if condition="$v['state'] eq 1">
+				   <div class="panel panel-danger">
+						<div class="panel-heading">
+							<span class="h2">{$vo.tab_num}<small> 号桌 <small>{$vo.remark}</small></small></span>
+							<button class="btn btn-default pull-right details" data-tab_id="{$vo.id}" data-order_id="{$v.order_id}" data-toggle="modal" data-target="#Modal">用餐情况</button>
+							<hr>
+							<p>待结账 {$v.nums}人 / &yen;{$v.price}</p>
+							<div class="pull-right">
+								<a href="{:U('Order/check',array('id'=>$vo['id'],'order_id'=>$v['order_id']))}" class="btn btn-default ">确认结账</a>
+							</div>
+							<div class="clearfix"></div>
+						 </div>
+					</div> 
+				<else/>
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							<span class="h2">{$vo.tab_num}<small> 号桌 <small>{$vo.remark}</small></small></span>
+							<button class="btn btn-default pull-right details" data-tab_id="{$vo.id}" data-order_id="{$v.order_id}" data-toggle="modal" data-target="#Modal">用餐情况</button>
+							<hr>
+							<p>用餐中 {$v.nums}人 / &yen; {$v.price}</p>
+							<p>用餐时间 <?php echo intval((time()-strtotime($v['order_time']))/60) ?>分</p>
+							<a href="{:U('Order/diancai',array('id'=>$vo['id'],'order_id'=>$v['order_id']))}" class="btn btn-default ">加菜</a>
+							<div class="pull-right" >
+								<php>$auth=json_decode($_SESSION['user']['auth'],true);if(in_array(2,$auth)||in_array(0,$auth)){</php>
+									<a href="{:U('Order/check',array('id'=>$vo['id'],'order_id'=>$v['order_id']))}" class="btn btn-default <if condition="session('user.level') lt 1">hidden</if> ">结账</a>
+								<php>}</php>
+							</div>
+						 </div>
+					</div>
+				</if>
+				</div>
+			</if>
+			</volist>
+		<else/>
+		    
+		</if>
+		<?php if(!$c){ ?>
+		<div class="col-md-3 col-lg-2">
+            <div class="panel panel-<if condition="$vo['state'] eq 1">warning<else/>success</if>">
+				
+                <div class="panel-heading">
+                    <span class="h2">{$vo.tab_num}<small> 号桌 <small>{$vo.remark}</small></small></span>
+                <hr>
+                <if condition="$vo['state'] eq 1">
+                    <?php $co=0; ?>
+				<volist name="order" id="v">
+				    <if condition="$vo['id'] eq $v['tab_id']">
+                        <?php if($co<=0){ ?>
+						<p>已开桌 / {$v.nums}人 </p>
+						<p>用餐时间 <?php echo intval((time()-strtotime($v['order_time']))/60) ?>分</p>
+                        <a href="{:U('Order/close_tab',array('tab_id'=>$vo['id'],'order_id'=>$v['order_id']))}" class="btn btn-default guantai" data-tab_id="{$vo['id']}">关桌</a>
+                        <div class="pull-right">
+						<!-- {:U('Order/diancai?id='.$vo['id'].'')} -->
+							<a href="__CONTROLLER__/diancai/id/{$vo.id}/order_id/{$v.order_id}" class="btn btn-default">点菜</a>
+						</div>
+                        <?php $co++; ?>
+                        <?php } ?>
+				    </if>
+				</volist>
+                    <?php if($co<=0){ ?>
+                    <p>开桌失败，请关桌重试</p>
+                    <a href="{:U('Order/close_tab',array('tab_id'=>$vo['id'],'order_id'=>0))}" class="btn btn-default guantai" data-tab_id="{$vo['id']}">关桌</a>
+                    <?php } ?>
+                <else/>
+                    <p>空闲</p>
+                    <p>&nbsp;</p>
+                    <div class="pull-right">
+                        <a class="btn btn-default kaitai" data-toggle="modal" data-target="#myModal" data-tab_id="{$vo['id']}">开桌</a>
+                    </div>
+                </if>
+                <div class="clearfix"></div>
+                </div>
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+                            <div class="modal-header">开桌</div>
+							<form action="{:U('Order/kaitai')}" method="post" class="form-inline" role="form" id="form_kaitai">
+							<div class="modal-body">
+								<input type="hidden" name="tab_id" id="tab_id" value="1"/>
+								<div class="form-group">
+									<label for="txt_nums">就餐人数：</label>
+									<input id="txt_nums" type="text" class="form-control" name="nums" placeholder="" size="5" >
+									<?php
+                                for($i=1;$i<11;$i++){
+                                    echo '<span class="btn btn-default btn-sm btn_number" data-number="'.$i.'">'.$i.'</span> ';
+									    }
+									?>
+								</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary " onclick="document.forms.form_kaitai.submit();this.disabled=true;">
+                                    确认开桌
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            </div>
+							</form>
+						</div>
+					</div>
+				</div>
+            </div>
+			</div>
+		<?php } ?>
+    </volist>
+		
+		<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="ModalLabel">
+							订单详情
+						</h4>
+					</div>
+					<div class="modal-body" >
+						<p class="xq"></p>
+                    </div>
+					<div class="modal-footer">
+                        <div class="pull-left">
+                            <div class="btn-group hidden">
+                                <button type="button" class="btn btn-warning dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    补打厨单 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+									<volist name="group" id="vo">
+										<li><a href="#" class="reprint" data-group_id={$vo.group_id}>{$vo.name}</a></li>
+									</volist>
+                                    <!-- <li><a href="#">素菜</a></li> -->
+                                    <!-- <li><a href="#">荤菜</a></li> -->
+                                </ul>
+                            </div>
+							<?php $auth=json_decode($_SESSION['user']['auth'],true);if(in_array(2,$auth)||in_array(0,$auth)){ ?>
+								<a href="#" class="btn btn-danger tuicai" data-order_id="1" data-tab_id="1">退菜</a>
+							<?php } ?>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+                </div>
+			</div>
+		</div>
+		
+    </div>
+</div>
+<script>
+
+    var timer=0;
+
+	$(".kaitai").click(function(){
+        timer=-30;
+        var tab_id=$(this).data("tab_id");
+		$("#tab_id").val(tab_id);
+	});
+
+
+	$(".details").click(function(){
+        timer=-20;
+        $(".xq").html("<div class='alert alert-info'>正在加载……</div>");
+        var order_id=$(this).data("order_id");
+        var tab_id=$(this).data("tab_id");
+		$('#Modal').on('shown.bs.modal',function() {
+			$(".tuicai").data("order_id",order_id);
+			$(".tuicai").data("tab_id",tab_id);
+		});
+		$.ajax({
+			type:'post',
+			url:'{:U('Order/ajax_details')}',
+			data:'order_id='+order_id,
+			success:function(msg){
+			//将后台取得值转换成js对象
+				//var objArr=eval('('+msg+')');
+				$(".xq").html("<pre>"+msg+"</pre>");
+			}
+		});
+    });
+
+    $(document).on("click", ".btn_number", function () {
+        var number=$(this).data("number");
+        $("#txt_nums").val(number);
+    });
+
+    setInterval(function(){
+        timer++;
+        //console.log(timer);
+        if(timer>=20){
+            timer=0;
+            location.reload();
+        }
+    },1000);
+
+    $(".btn[data-dismiss='modal']").click(function(){
+        timer=10;
+    });
+    $(document).keydown(function(){
+        timer=0;
+    });
+
+	$(".tuicai").click(function(){
+		var order_id=$(this).data("order_id");
+		var tab_id=$(this).data("tab_id");
+		location.href="{:U('Order/tuicai')}?order_id="+order_id+"&tab_id="+tab_id;
+	});
+	
+	$(".reprint").click(function(){
+		var group_id=$(this).data("group_id");
+		var order_id=$(".details").data("order_id");
+		$.ajax({
+			type:'post',
+			url:'{:U('Order/reprint')}',
+			data:'group_id='+group_id+'&order_id='+order_id,
+			success:function(msg){
+				alert(msg);
+			}
+		});
+	});
+	
+
+</script>	
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>{$_SESSION['shop']['name']} 智能点餐收银系统</title>
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="__PUBLIC__/home/css/dashboard.css?7" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/datatables/1.10.3/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="//cdn.bootcss.com/jqueryui/1.11.2/jquery-ui.min.css">
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/datatables/1.10.3/js/jquery.dataTables.min.js"></script>
+
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://img.heyguo.com/webcss/plan/images/logo.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://img.heyguo.com/webcss/plan/images/logo.png">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="http://img.heyguo.com/webcss/plan/images/logo.png">
+    <link rel="shortcut icon" href="http://static.heyguo.com/favicon-96x96.png">
+
+    <script type="text/javascript" charset="utf-8">
+
+        document.documentElement.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, false);
+
+        // Mobile Safari in standalone mode
+        if(("standalone" in window.navigator) && window.navigator.standalone){
+
+            // If you want to prevent remote links in standalone web apps opening Mobile Safari, change 'remotes' to true
+            var noddy, remotes = true;
+
+            document.addEventListener('click', function(event) {
+
+                noddy = event.target;
+
+                // Bubble up until we hit link or top HTML element. Warning: BODY element is not compulsory so better to stop on HTML
+                while(noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+                    noddy = noddy.parentNode;
+                }
+
+                if('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes))
+                {
+                    event.preventDefault();
+                    document.location.href = noddy.href;
+                }
+
+            },false);
+        }
+    </script>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?323b532c6dff00f3fe5233b2c0cddb40";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/"><img src="/Uploads/{$_SESSION['shop']['logo']}" height="40" align="left" style="position: relative; top: -10px; margin-right: 10px;" /> {$_SESSION['shop']['name']}</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+				<?php $auth=json_decode($_SESSION['user']['auth'],true);if(in_array(2,$auth)||in_array(0,$auth)){ ?>
+					<!-- <if condition="session('user.level') gt 0"> -->
+						<li><a>今日台数：<if condition="$sum_num eq ''">0<else/>{$orders}</if></a></li>
+						<li><a>人数：<if condition="$sum_num eq ''">0<else/>{$sum_num}</if></a></li>
+						<li><a>营业额：&yen;<if condition="$sum_num eq ''">0<else/>{$sum_price}</if></a></li>
+						<li><a>实收：&yen;<if condition="$sum_paid eq ''">0<else/>{$sum_paid}</if></a></li>
+					<!-- </if> -->
+				<?php } ?>
+                <li>
+                    <a href="javascript:location.reload()">刷新</a>
+                </li>
+                <li>
+                    <a href="#">{:session('user.nickname')}</a></li>
+                <li>
+                    <a href="{:U('Login/login_out')}">退出</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>

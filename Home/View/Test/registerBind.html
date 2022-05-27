@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+            <meta content="IE=edge" http-equiv="X-UA-Compatible">
+                <meta content="width=device-width, initial-scale=1" name="viewport">
+                    <title>
+                        嘿果餐饮管理系统
+                    </title>
+                    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            body {
+            padding-top: 100px;
+            background-color: #eee;
+        }
+        .navbar-fixed-top {
+            border: 0;
+            background: #222 url(/ms-icon-70x70.png) no-repeat center center;
+            background-size: auto 70%;
+        }
+                        </style>
+                    </link>
+                </meta>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        <div class="container text-center">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">
+                            嘿果餐饮管理系统
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <h1>
+                嘿果餐饮管理系统
+            </h1>
+            <p id="wxprcode">
+                <img height="200" src="__PUBLIC__/admin/img/logo3.png"/>
+            </p>
+            <form action="{:U('Test/registerBind')}" method="post">
+                <div style="height: 300px;">
+                    <h3>
+                        微信账号绑定
+                    </h3>
+                    店铺号：
+                    <input name="shop_id" type="text" value="{$_COOKIE['shop_id']}"/></br></br>
+                    帐   号：
+                    <input name="username" type="text"/></br></br>
+                    密   码：
+                    <input name="password" type="password"/></br></br>
+                    <button>
+                        登录
+                    </button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
+

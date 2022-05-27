@@ -1,0 +1,244 @@
+<include file="Public/header" />
+
+<div class="container-fluid">
+    <div class="row">
+        <form method="post" action="{:U('Order/addorder')}" id="form_submit">
+            <div id="" class="col-md-4 col-lg-2 sidebar">
+                <div class="panel panel-default" style="height: 90%;">
+                    <div class="panel-heading">
+                        <span class="h2">{$tab.tab_num}<small> 号桌 点菜</small></span>
+                        <a class="btn btn-default btn-sm pull-right" onclick="history.go(-1)">返回</a>
+                        <input type="hidden" name="table_id" value="{$tab.id}" />
+                        <input type="hidden" name="order_id" value="{$order_id}" />
+                        <div class="btn-group pull-right hidden">
+                            <button type="button" class="btn btn-warning btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                换桌 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+								<volist name="table" id="vo">
+								    <li <if condition="$vo['id'] eq $tab['id']">class="hidden"</if>><a href="#" class="tab_id" data-tab_id="{$vo['id']}" data-order_id="{$order_id}">{$vo.tab_num}</a></li>
+								</volist>
+                            </ul>
+						</div>
+                    </div>
+                    <div style="height: 90%; overflow-y: scroll;">
+                        <table class="table" id="menu_list">
+                            <thead>
+                                <th>#</th>
+                                <th>菜品</th>
+                                <th class="text-center" width="40%">数量</th>
+                            </thead>
+                            <tbody>
+                                <tr class="menu_item hidden" data-menu_id="0" data-menu_price="0">
+                                    <th><span class="menu_index">0</span></th>
+                                    <td><h4 class="menu_title"></h4></td>
+                                    <td class="text-center"><a href="javascript:;" class="increase_menu_item pull-left"><h4 class="glyphicon glyphicon-plus-sign text-danger"></h4></a>  <a href="javascript:;" class="remove_menu_item pull-right"><h4 class="glyphicon glyphicon-minus-sign text-danger"></h4></a> <h4><a href="javascript:;" class="menu_count">0</a></h4></td>
+                            <input type="hidden" name="menu_id[]" value="0" />
+                            <input type="hidden" name="menu_count[]" value="0" />
+                            <input type="hidden" name="menu_name[]" value="0" />
+                            <input type="hidden" name="group_id[]" value="0" />
+                            <input type="hidden" name="group_name[]" value="0" />
+                            <input type="hidden" name="price[]" value="0" />
+                                </tr>
+                            </tbody>
+                        </table>
+                </div>
+                </div>
+                <div class="">
+                    <button class="btn btn-warning btn-lg btn-block" id="btn_submit" type="submit" onclick="return check_order();">确认下单 <span class="small">&yen; <span id="total_menu_price">0.00</span></span></button>
+                </div>
+            </div>
+        </form>
+        <div class="col-md-8 col-lg-10 col-md-offset-4 col-lg-offset-2 main">
+            <ul class="nav nav-pills nav-justified" role="tablist" id="menu_group_list">
+				<volist name="group" id="vo" key='k'> 
+               		<li role="presentation"  <if condition="$k == 1">class="active"</if>>
+                        <a href="#group{$vo.group_id}" aria-controls="group{$vo.group_id}" role="tab" data-toggle="tab">
+                            {$vo.name}
+                            <span class="label label-warning group_count" data-group_id="{$vo.group_id}"></span>
+                        </a>
+                    </li>
+				</volist>
+            </ul>
+            <hr />
+
+            <div class="tab-content">
+				<volist name="group" id="v" key='k'>
+                <div role="tabpanel" class="tab-pane group_box <if condition="$k == 1">active</if>" id="group{$v.group_id}" data-group_id="{$v.group_id}">
+                    <div class="row">
+						<volist name="fruits" id="vo">
+						<if condition="$vo['group_id'] eq $v['group_id']">
+					    <div class="col-md-3 col-lg-2">
+                                <button class="btn btn-default btn-lg btn-block btn_add_menu " data-menu_title="{$vo.name}" data-menu_id="{$vo.fruits_id}" data-menu_price="{$vo.price}" data-menu_name="{$vo.name}" data-group_id="{$v.group_id}" data-group_name="{$v.name}">
+                                    <h4>{$vo.name}
+                                        <div class="pull-right badge menu_count" style="background-color: #bc2923; position: absolute; right: 10px; top: -5px; color: #FFF;"></div>
+                                        <div><small class="<if condition="$vo['stock'] lt 10">text-danger<else/>text-success</if> ">库存 {$vo.stock}</small></div>
+                                    </h4>
+                                </button>
+							</p>
+                        </div>
+						</if>
+					</volist>
+                    </div>
+                </div>
+				</volist>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var total_menu_price=0;
+    var total_menu_count=0;
+
+    var hitEvent = 'ontouchstart' in document.documentElement
+        ? 'click'//'touchend'
+        : 'click';
+
+					<!-- btn_add_menu -->
+    $(document).on(hitEvent, ".btn_add_menu", function () {
+        var $this=$(this);
+        var menu_title=$(this).data("menu_title");
+        var menu_id=$(this).data("menu_id");
+        var menu_price=$(this).data("menu_price");
+		
+		var menu_name=$(this).data("menu_name");
+		var group_id=$(this).data("group_id");
+		var group_name=$(this).data("group_name");
+		
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        if($menu.length>0){
+            var _menu_count=parseInt($menu.find("input[name='menu_count[]']").val())+1;
+            $this.find(".menu_count").text(_menu_count);
+            $menu.find(".menu_count").text(_menu_count);
+            $menu.find("input[name='menu_count[]']").val(_menu_count);
+        }else{
+            $menu=$(".menu_item:eq(0)").clone();
+            $menu.find("input[name='menu_id[]']").val(menu_id);
+            $menu.find(".menu_title").text(menu_title);
+            $this.find(".menu_count").text(1);
+            $menu.find(".menu_count").text(1);
+            $menu.find("input[name='menu_count[]']").val(1);
+            $menu.attr("data-menu_id", menu_id);
+            $menu.attr("data-menu_price", menu_price);
+			
+			$menu.find("input[name='menu_name[]']").val(menu_name);
+			$menu.find("input[name='group_id[]']").val(group_id);
+			$menu.find("input[name='group_name[]']").val(group_name);
+			$menu.find("input[name='price[]']").val(menu_price);
+            $menu.attr("data-menu_name", menu_name);
+            $menu.attr("data-group_id", group_id);
+            $menu.attr("data-group_name", group_name);
+			
+            $menu.removeClass("hidden");
+
+            $("#menu_list").prepend($menu);
+        }
+
+        calc_total_price();
+    });
+							<!-- menu_item -->
+    $(document).on(hitEvent, ".increase_menu_item", function () {
+        var menu_id=$(this).parents(".menu_item").data("menu_id");
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        var $btn=$(".btn_add_menu[data-menu_id="+menu_id+"]");
+        var menu_count=parseInt($menu.find("input[name='menu_count[]']").val());
+        $menu.find(".menu_count").text(menu_count+1);
+        $btn.find(".menu_count").text(menu_count+1);
+        $menu.find("input[name='menu_count[]']").val(menu_count+1);
+        calc_total_price();
+    });
+    $(document).on(hitEvent, ".remove_menu_item", function () {
+        var menu_id=$(this).parents(".menu_item").data("menu_id");
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        var $btn=$(".btn_add_menu[data-menu_id="+menu_id+"]");
+        var menu_count=parseInt($menu.find("input[name='menu_count[]']").val());
+        if(menu_count>1){
+            $menu.find(".menu_count").text(menu_count-1);
+            $btn.find(".menu_count").text(menu_count-1);
+            $menu.find("input[name='menu_count[]']").val(menu_count-1);
+        }else{
+            $btn.find(".menu_count").text("");
+            $menu.remove();
+        }
+        calc_total_price();
+    });
+    $(document).on(hitEvent, ".menu_count", function () {
+        var $this=$(this);
+        var menu_id=$(this).parents(".menu_item").data("menu_id");
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        var $btn=$(".btn_add_menu[data-menu_id="+menu_id+"]");
+        var menu_count=parseInt($menu.find("input[name='menu_count[]']").val());
+        var menu_count=parseInt(prompt("请输入数量", menu_count));
+        if(menu_count){
+            $btn.find(".menu_count").text(menu_count);
+            $this.text(menu_count);
+            $menu.find("input[name='menu_count[]']").val(menu_count);
+        }
+        calc_total_price();
+    });
+
+        $(document).ready(function () {
+        $("#menu_group_list li:eq(0)").click();
+    });
+
+    function check_order() {
+        if($(".menu_item").length<=1){
+            alert("尚未点菜");
+            return false;
+        }else{
+            $("#btn_submit").prop("disabled", true);
+            $("#form_submit").submit();
+        }
+    }
+
+    function calc_total_price() {
+        total_menu_price =0;
+        var menu_index=$(".menu_item").length-1;
+        $(".menu_item").each(function () {
+            total_menu_price+=parseFloat($(this).data("menu_price")) * parseInt($(this).find("input[name='menu_count[]']").val());
+            $(this).find(".menu_index").text(menu_index);
+            menu_index--;
+        });
+        $("#total_menu_price").text(total_menu_price.toFixed(2));
+
+        $(".group_box").each(function () {
+            var group_id=$(this).data("group_id");
+            var group_count=0;
+            $(this).find(".menu_count").each(function () {
+                var menu_count=parseInt($(this).text());
+                if(menu_count>0){
+                    group_count+=menu_count;
+                }
+            });
+            if(group_count>0){
+                $(".group_count[data-group_id="+group_id+"]").text(group_count);
+            }else{
+                $(".group_count[data-group_id="+group_id+"]").text("");
+            }
+        });
+    }
+
+	$(".tab_id").click(function(){
+		var tab_id=$(this).data("tab_id");
+		var order_id=$(this).data("order_id");
+		var tab_num=$(this).text();
+		
+		if(confirm("确定要换到"+tab_num+"桌吗?")){
+			$.ajax({
+			type:'post',
+			url:'{:U('Order/change_tab')}',
+			data:'order_id='+order_id+"&tab_id="+tab_id,
+			success:function(msg){
+			//将后台取得值转换成js对象
+				//var objArr=eval('('+msg+')');
+				$(".tab_num").text(msg);
+			}
+		});
+			//location.href=url="{:U('Order/change_tab')}?tab_id="+tab_id+"&order_id="+order_id;
+		}	
+	});
+</script>
+
+</body>
+</html>

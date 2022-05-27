@@ -1,0 +1,158 @@
+<include file="Public/header"/>
+<include file="Public/menu"/>
+<div class="today">
+    <h3>订单管理</h3>
+</div>
+<div class="container-fluid">
+    <form action="" method="get">
+        <div class="row text-center time">
+            <div class="col-xs-3"><input type="button" class="btn btn-default <eq name='w.selt' value='1'>  btn-danger </eq>" value="今天" data-val="1"></div>
+            <div class="col-xs-3"><input type="button" class="btn btn-default <eq name='w.selt' value='2'>  btn-danger </eq>" value="昨天" data-val="2"></div>
+            <div class="col-xs-3"><input type="button" class="btn btn-default <eq name='w.selt' value='8'>  btn-danger </eq>" value="近7天" data-val="8"></div>
+            <div class="col-xs-3"><input type="button" class="btn btn-default <eq name='w.selt' value='0'>  btn-danger </eq> custom" value="自定义" data-val="0"></div>
+        </div>
+        <div class="timebox row">
+            <div class="col-xs-5">
+                <input readonly="readonly" style="ime-mode:disabled" onkeypress="noPermitInput(event)" class="start_time btn btn-default form-control" name="start_time" value="{$w.start_time}">
+            </div>
+            <span class="col-xs-2 text-center">-</span>
+            <div class="col-xs-5">
+                <input readonly="readonly" style="ime-mode:disabled" onkeypress="noPermitInput(event)" class="end_time btn btn-default form-control" name="end_time" value="{$w.end_time}">
+            </div>
+        </div>
+        <input type="hidden" name="selt" value="" class="selt">
+    </form>
+    <div class="oder_content row">
+        <div class="col-xs-12">
+            <volist name="orders" id="order">
+            <div class="panel panel-danger">
+                <div class="panel-heading clearfix">
+				<h4><span class="pull-left">桌号：{$order.tab_num}</span><span class="pull-right">{$order.state}</span></h4>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <div>
+                            <div class="xs_content clearfix bod">
+                                <div class="col-xs-6">份数：{$order.cs}</div>
+                                <div class="col-xs-6">菜品数：{$order.cps}</div>
+                                <div class="col-xs-6">营业额：{$order.price}</div>
+                                <div class="col-xs-6">实收额：{$order.paid}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sp">
+                        <div>
+                            <h4>菜品<a class="pull-right down" href="javascript:;"><span class="sho">展开</span> &nbsp;<span class="glyphicon glyphicon-chevron-down span"></span></a></h4>
+                        </div>
+                        <div class="shop_oder">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <th>菜名</th>
+                                    <th>数量</th>
+                                    <th>价格</th>
+                                    <th>金额</th>
+                                </tr>
+                                <volist name="order.menu" id='menu'>
+                                <tr>
+                                    <td>{$menu.name}</td>
+                                    <td>{$menu.price}</td>
+                                    <td>{$menu.num}</td>
+                                    <td>{$menu.total}</td>
+                                </tr>
+                                </volist>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer clearfix">
+                    <div class="time_content">
+                        <p>下单时间：{$order.order_time}</p>
+                        <p>结账时间：{$order.pay_time}</p>
+                        <p>单号：{$order.order_num}</p>
+                    </div>
+                    <div class="btn_console"><button class="btn btn-danger printZD" data-orderid="{$order.order_id}">打印小票</button></div>
+                </div>
+            </div>
+            </volist>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.time input').click(function(){
+            var val=$(this).data('val');
+            var st=$('.start_time');
+            var et=$('.end_time');
+            switch(parseInt(val))
+            {
+                case 1:st.val(getCurrentDate);et.val(getCurrentDate);break;
+                case 2:st.val(getYesterdayDate);et.val(getYesterdayDate);break;
+                case 3:st.val(getpdayDate);et.val(getpdayDate);break;
+                case 4:st.val(getWeekStartDate);et.val(getWeekEndDate);break;
+                case 5:st.val(getUpWeekStartDate);et.val(getUpWeekEndDate);break;
+                case 6:st.val(getMonthStartDate);et.val(getMonthEndDate);break;
+                case 7:st.val(getLastMonthStartDate);et.val(getLastMonthEndDate);break;
+                case 8:st.val(getSevenStartDate);et.val(getSevenEndDate);break;
+                case 9:st.val(getThirtyStartDate);et.val(getThirtyEndDate);break;
+                default: return false;break;
+            }
+            $('.selt').val(val);
+
+            $('.start_time,.end_time').datetimepicker('update');
+            $('form').submit();
+        })
+        $('.start_time,.end_time').change(function(){
+            $('.selt').val('0');
+            $('form').submit();
+        })
+
+        var j=0;
+        $(".down").click(function () {
+            j++;
+            if (j===1){
+                $(this).parents('.sp').find('.span').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                $(this).parents('.sp').find('.sho').text('收起');
+                var el = $(this).parents('.sp').find('.shop_oder'),
+                    curHeight = el.height(),
+                    autoHeight = el.css('height', 'auto').height();
+                el.height(curHeight).animate({height: autoHeight}, 300);
+                $(this).parents('.sp').find('h4').removeClass('bod');
+            }else {
+                $(this).parents('.sp').find('.span').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                $(this).parents('.sp').find('.sho').text('展开');
+                var el = $(this).parents('.sp').find('.shop_oder'),
+                    curHeight = el.height(),
+                    autoHeight = el.css('height', '0').height();
+                el.height(curHeight).animate({height: autoHeight}, 300);
+                $(this).parents('.sp').find('h4').removeClass('bod');
+                j=0;
+            }
+
+            function noPermitInput(e){
+                var evt = window.event || e ;
+                if(isIE()){
+                    evt.returnValue=false; //ie 禁止键盘输入
+                }else{
+                    evt.preventDefault(); //fire fox 禁止键盘输入
+                }
+            }
+            function isIE() {
+                if (window.navigator.userAgent.toLowerCase().indexOf("msie") >= 1)
+                    return true;
+                else
+                    return false;
+            }
+        });
+
+        $('.printZD').click(function(){
+            var order_id=$(this).data('orderid');
+            if (!order_id) {alert('网络不给力请稍等...'); return false;}
+            $.post('{:U("Order/printer")}',{order_id:order_id},function(msg){
+                console.log(msg);
+            })
+        });
+    });
+</script>
+<include file="Public/footer"/>

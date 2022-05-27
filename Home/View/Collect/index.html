@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>取单</title>
+</head>
+<body>
+	<ul>
+	<volist name="tab" id="vo">
+		<li> <if condition="$vo['state'] eq 0">
+		   <div> 无客</div>
+		<else/>
+		   <div style="background-color:red"> <a href="{:U('Collect/order?id='.$vo['id'])}" />已开台</a></div> 
+		</if> 
+		</li>	
+	</volist>
+	</ul>
+</body>
+</html>

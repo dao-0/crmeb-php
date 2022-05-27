@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scale=0;" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no,email=no" name="format-detection" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>{$_SESSION['back_shop']['name']} 餐饮管理系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/mobile/css/bootstrap.css">
+    <link rel="stylesheet" href="__PUBLIC__/mobile/css/indexstyle.css">
+    <script src="__PUBLIC__/mobile/js/jquery-3.1.1.js"></script>
+    <script src="__PUBLIC__/mobile/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="header container-fluid">
+    <div class="text-center content">
+        <img src="/Uploads/{$_SESSION['back_shop']['logo']}" alt="">
+        <h1 class="text-center">{$_SESSION['back_shop']['name']} 餐饮管理系统</h1>
+    </div>
+</div>
+<div class="today">
+    <h3>今日数据</h3>
+    <div class="container-fluid">
+        <div class="row main">
+            <div class="col-xs-6">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        今日台数
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">{$order}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        今日人数
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center"><if condition="$sum_num eq ''">0<else/>{$sum_num}</if></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        今日营业额
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">&yen; <if condition="$sum_price eq ''">0<else/>{$sum_price}</if></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        今日实收金额
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">&yen; <if condition="$sum_paid eq ''">0<else/>{$sum_paid}</if></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3>昨日数据</h3>
+    <div class="container-fluid">
+        <div class="row main">
+            <div class="col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        昨日台数
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">{$yes_order}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        昨日人数
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center"><if condition="$yes_sum_num eq ''">0<else/>{$yes_sum_num}</if></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        昨日营业额
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">&yen; <if condition="$yes_sum_price eq ''">0<else/>{$yes_sum_price}</if></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        昨日实收金额
+                    </div>
+                    <div class="panel-body">
+                        <h1 class="text-center">&yen; <if condition="$yes_sum_paid eq ''">0<else/>{$yes_sum_paid}</if></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="Public/footer"/>
+</body>
+</html>

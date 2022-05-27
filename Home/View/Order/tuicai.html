@@ -1,0 +1,76 @@
+<include file="Public/header" />
+
+<form method="post" action="{:U('Order/tuicai')}">
+<div class="container-fluid">
+    <div class="main">
+        <span class="h2">{$tab.tab_num}<small> 号桌 退菜</small></span>
+        <a class="btn btn-default pull-right" onclick="history.go(-1)">返回</a>
+        <hr />
+        <table class="table" id="menu_list">
+            <thead>
+            <th>菜品</th>
+            <th>当前数量</th>
+            <th class="text-danger">退菜数量</th>
+            </thead>
+            <tbody>
+            <volist name="order_menu" id="vo">
+                <tr class="menu_item" data-menu_id="{$vo.id}" data-menu_price="0">
+                    <td><div class="menu_title"><h4>{$vo.mname}</h4></div></td>
+                    <td><div class="menu_count_o"><h4>{$vo.num}</h4></div></td>
+                    <td class="text-center"><a href="javascript:;" class="increase_menu_item pull-left"><h4 class="glyphicon glyphicon-plus-sign text-danger"></h4></a>  <a href="javascript:;" class="remove_menu_item pull-right"><h4 class="glyphicon glyphicon-minus-sign text-danger"></h4></a> <h4 class="menu_count text-danger">0</h4></td>
+                    <input type="hidden" name="menu_id[]" value="{$vo.menu_id}" />
+                    <input type="hidden" name="menu_count_o[]" value="{$vo.num}" />
+                    <input type="hidden" name="menu_count[]" value="0" />
+                    <input type="hidden" name="id[]" value="{$vo.id}" />
+                </tr>
+            </volist>
+            </tbody>
+			<input type="hidden" name="order_id" value="{$order_id}"/>
+			<input type="hidden" name="tab_id" value="{$tab_id}"/>
+			
+        </table>
+    </div>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+        <button class="btn btn-warning btn-lg">确认退菜</button>
+        <a class="btn btn-default btn-lg" onclick="history.go(-1)">取消</a>
+    </div>
+</nav>
+</form>
+
+<script>
+
+    var hitEvent = 'ontouchstart' in document.documentElement
+        ? 'click'//'touchend'
+        : 'click';
+
+    <!-- menu_item -->
+    $(document).on(hitEvent, ".increase_menu_item", function () {
+        var menu_id=$(this).parents(".menu_item").data("menu_id");
+        console.log(menu_id);
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        var menu_count=parseInt($menu.find("input[name='menu_count[]']").val());
+        var menu_count_o=parseInt($menu.find("input[name='menu_count_o[]']").val());
+        if(menu_count<menu_count_o) {
+            $menu.find(".menu_count").text(menu_count + 1);
+            $menu.find("input[name='menu_count[]']").val(menu_count + 1);
+        }
+    });
+    $(document).on(hitEvent, ".remove_menu_item", function () {
+        var menu_id=$(this).parents(".menu_item").data("menu_id");
+        var $menu=$(".menu_item[data-menu_id="+menu_id+"]");
+        var menu_count=parseInt($menu.find("input[name='menu_count[]']").val());
+        if(menu_count>0){
+            $menu.find(".menu_count").text(menu_count-1);
+            $menu.find("input[name='menu_count[]']").val(menu_count-1);
+        }else{
+        }
+    });
+
+
+</script>
+
+</body>
+</html>
