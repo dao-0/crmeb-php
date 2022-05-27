@@ -1,0 +1,31 @@
+<include file="Public/header"/>
+<div class="panel panel-default">
+	<div class="panel-heading">
+         当前修改
+    </div>
+    <div class="panel-body">
+        工号:{$admins.username}&emsp;&emsp;姓名:{$admins.nickname}
+    </div>
+</div>
+<hr  />
+<form action="" method="post" role="form">
+<input type="hidden" name="id" value="{$admins.id}"/>
+	<div class="checkbox">
+		<label>
+		  <input type="checkbox" name="auth[]" value="1" <?php if(in_array(1,json_decode($admins['auth'],true))){?>checked="checked"<?php } ?> >收银
+		</label>&emsp;
+		<label>
+		  <input type="checkbox" name="auth[]" value="2" <?php if(in_array(2,json_decode($admins['auth'],true))){?>checked="checked"<?php } ?> >退菜
+		</label>&emsp;
+		<label>
+		  <input type="checkbox" name="auth[]" value="3" <?php if(in_array(3,json_decode($admins['auth'],true))){?>checked="checked"<?php } ?> >查看营业额
+		</label>
+	</div>
+	<hr  />
+	<div>
+		<input type="submit" value="确定" class="btn btn-primary"/>&emsp;
+		<input type="button" value="返回" class="btn btn-danger" onclick="window.history.back()"/>
+	</div>
+</form>
+</body>
+</html>

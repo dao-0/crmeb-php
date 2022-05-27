@@ -1,0 +1,170 @@
+<include file="Public/header"/>
+<!-- 时间插件 -->
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/datetimepicker.css" />
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/datetimepicker_blue.css" />
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/dropdown.css" />
+<script src="__PUBLIC__/common/js/datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+<script src="__PUBLIC__/common/js/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+<!-- 时间插件 -->
+<style type="text/css">
+    .pagename{float: left;}
+    .pagename h1{margin: 0px;}
+    .seltime{width: 200px; display:inline-block; float: right; margin-right: 20px;}
+    .timebox{border:1px solid #ccc; display: inline-block; float: right; border-radius: 4px; padding: 0 10px}
+    .start_time,.end_time{border: none; text-align: center; height: 32px; line-height: 32px; }
+    .end_time{border-right: 1px solid #ccc;}
+    .timebox button{border:none; background: #fff;}
+</style>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<div class="container-fluid">
+    <div class="row main">
+        <div class="col-md-12">
+            <div class="pagename"><h1>日志管理</h1></div>
+            <form method="get" action="" id="fsearch">
+            
+            <div class="timebox"><input class="start_time" placeholder="开始时间" value="{$w.start_time}" type="text" name="start_time" readonly="true">-<input type="text" class="end_time" placeholder="结束时间" name="end_time" value="{$w.end_time}" readonly="true"><button type="submit"> 搜索</button></div>
+            <div class="seltime">
+                <select class="form-control selt" name="type">
+                    <option value='0' <eq name="w.type" value='0'> selected="selected" </eq>  >所有日志</option>
+                    <option value='1' <eq name="w.type" value='1'> selected="selected" </eq>  >登录日志</option>
+                    <option value='2' <eq name="w.type" value='2'> selected="selected" </eq>  >打印日志</option>
+                    
+                </select>
+            </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row main">
+        <div class="col-md-12">
+        <table id="example" class="table table-hover table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>日志ID</th>       
+                <th>类型</th>         
+                <th>用户ID</th>       
+                <th>用户名</th>        
+                <th>操作地址</th>       
+                <th>IP</th>     
+                <th>时间</th>
+                <th>平台</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <volist name="lists" id="list">
+            <tr data-log_id="{$list.id}" data-toggle="modal" data-target="#Modal" class="trd">
+                <td>#{$list.id}</td>
+                <td>{$list.type}</td>
+                <td>{$list.uid}</td>
+                <td>{$list.username}</td>
+                <td>{$list.url}</td>
+                <td>{$list.ip}</td>
+                <td>{$list.time}</td>
+                <td>{$list.platform}</td>
+                <td>{$list.desc}</td>
+                <td class="text-center"><button class="btn btn-primary">查看详情</button></td>
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+ </div>
+    </div>
+</div>
+ <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="ModalLabel">
+                    日志详情
+                </h4>
+            </div>
+            <div class="modal-body" >
+                <div class="detailMo"></div>
+            </div>
+            <div class="modal-footer">
+               
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/getDateRange.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('.start_time').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        todayBtn:  1,
+        autoclose:true
+    });
+    $('.end_time').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        todayBtn:  1,
+        autoclose:true
+    });
+    
+    var table =$('#example').DataTable({
+        // lengthMenu: [
+        //     [ 10, 25, 50, -1 ],
+        //     [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+        // ],
+        "order": [[ 6, 'desc' ]],
+        "pageLength": 50,
+        language: {
+        "sProcessing": "处理中...",
+        "sLengthMenu": "显示 _MENU_ 项结果",
+        "sZeroRecords": "没有匹配结果",
+        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+        "sInfoPostFix": "",
+        "sSearch": "搜索:",
+        "sUrl": "",
+        "sEmptyTable": "表中数据为空",
+        "sLoadingRecords": "载入中...",
+        "sInfoThousands": ",",
+        "oPaginate": {
+            "sFirst": "首页",
+            "sPrevious": "上页",
+            "sNext": "下页",
+            "sLast": "末页"
+        },
+        "oAria": {
+            "sSortAscending": ": 以升序排列此列",
+            "sSortDescending": ": 以降序排列此列"
+        }
+    }
+    });
+
+
+
+    $('body').delegate('.trd','click',function(){
+        $(".detailMo").html("<div class='alert alert-info'>正在加载……</div>");
+        var log_id=$(this).data("log_id");
+        $.ajax({
+            type:'post',
+            url:'{:U("ajax_details")}',
+            data:'log_id='+log_id,
+            success:function(msg){
+                $(".detailMo").html("<pre>"+msg.content+"</pre>");
+            }
+        });
+    });
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<include file="Public/header"/>
+	<form action="{:U(Discount/edit)}" method="post" role="form">
+		<div class="form-group">
+			<input type="hidden" name="id" value="{$discount.id}" />
+			<label for="name">名称:</label>
+			<input type="text" class="form-control" name="name" value="{$discount.name}"/>
+		 </div>
+		 <if condition="$discount['type'] eq 1">
+			  <div class="form-group">
+				<label for="discount">折扣/折<small class="text-danger">(如果是九折,请输入9,如果是九五折,请输入9.5)</small>:</label>
+				<input type="text" class="form-control" name="discount" value="{$discount.discount}"/>
+			 </div>
+		 <else/>
+		
+		 </if>
+		<input type="submit" value="提交" class="btn btn-default"/>
+	</form>
+</body>
+</html>

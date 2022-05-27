@@ -1,0 +1,51 @@
+<include file="Public/header"/>
+<form action="{:U('Table/sortss')}" method="post" id="form1">
+<a href="{:U('Table/add')}" class="btn btn-primary"/>添加</a>
+<a href="{:U('Table/adds')}" class="btn btn-default"/>批量添加</a>
+<input type="submit" value="更新排序" class="btn btn-info"/>
+    提示：鼠标拖动进行排序，完成后点击“更新排序”按钮
+	</br></br>
+	<table class="table table-bordered table-hover">
+		<thead>
+		<tr>
+			<th>桌号</th>
+			<th>状态</th>		
+			<th>备注</th>		
+			<th>操作</th>	  	
+		</tr>
+		</thead>
+		<tbody>
+		<volist name="table" id="vo" key="k">
+		     <tr>
+			 	<input type="hidden" name="id[]" value="{$vo.id}"/>
+			 	<!-- <input type="hidden" name="ids[]" value="{$k}"/> -->
+				<!-- <input type="text" name="{$vo.id}" value="{$vo.sort}"/> -->
+				 <td>{$vo.tab_num}</td>
+		     	<td>
+					<if condition='$vo["state"] eq 0'>
+						无客
+					<else/>
+						已开台
+					</if>
+				</td>
+				<td>{$vo.remark}</td>					
+		     	<td>
+					<a href="{:U('Table/edit?id='.$vo['id'])}" />编辑</a>
+					<a href="{:U('Table/del?id='.$vo['id'])}" onclick="return confirm('是否删除？')"/>删除</a>
+				</td>		
+		     </tr>   
+		</volist>
+		</tbody>		
+	</table>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.dragsort-0.5.2.min.js"></script>
+<script type="text/javascript">
+   $(".table tbody").dragsort({
+		dragSelector: "td",
+		<!-- dragEnd: savesort, -->
+		dragBetween: false,
+		placeHolderTemplate: "<td></td>"
+	});
+</script>	
+</body>
+</html>

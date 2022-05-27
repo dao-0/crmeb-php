@@ -1,0 +1,38 @@
+<include file="Public/header"/>
+<form action="{:U('Group/sortss')}" method="post" >
+<a href="{:U('Group/add')}" class="btn btn-default"/>添加</a>
+<input type="submit" value="更新排序"  class="btn btn-primary"/> </br></br>
+	<table class="table table-bordered table-hover">
+		<thead>
+		<tr>
+			<th>序号</th>		
+			<th>分类名称</th>		
+			<th>操作</th>		
+		</tr>
+		</thead>
+		<tbody>
+		<volist name="group" id="vo" key="k">
+		     <tr>
+			 	<input type="hidden" name="group_id[]" value="{$vo.group_id}"/>
+		     	<!-- <td><input type="text" name="group_ids[]" value="{$vo.sort}"/></td>		 -->
+				<td>{$k}</td>	
+		     	<td>{$vo.name}</td>	
+		     	<td>
+					<a href="{:U('Group/edit?id='.$vo['group_id'])}" />编辑</a>
+					<a href="{:U('Group/del?id='.$vo['group_id'])}" onclick="return confirm('是否删除？')"/>删除</a>
+				</td>		
+		     </tr> 
+		</volist>
+		</tbody>
+	</table>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.dragsort-0.5.2.min.js"></script>
+<script type="text/javascript">
+   $(".table tbody").dragsort({
+		dragSelector: "td",
+		dragBetween: false,
+		placeHolderTemplate: "<td></td>"
+	});
+</script>	
+</body>
+</html>

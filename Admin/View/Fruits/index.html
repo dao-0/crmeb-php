@@ -1,0 +1,133 @@
+<include file="Public/header"/>
+<form action="{:U('Fruits/sorts')}" method="post" >
+<input type="hidden" name="group_id" value="{$group_id}">
+<a href="{:U('Fruits/add')}" class="btn btn-default"/>添加</a>
+<input type="submit" value="保存"  class="btn btn-primary"/> </br></br>
+	<!-- <table class="table table-bordered"> -->
+		<!-- <thead> -->
+		<!-- <tr> -->
+			<!-- <th>序号</th>	 -->
+			<!-- <!-- <th>商品图片</th>				 --> 
+			<!-- <th>商品名称</th>		 -->
+			<!-- <th>商品价格</th>		 -->
+			<!-- <th>分类</th>		 -->
+			<!-- <th>是否出售该菜品</th>		 -->
+			<!-- <th>操作</th>		 -->
+		<!-- </tr> -->
+		<!-- </thead> -->
+		<!-- <tbody > -->
+		<!-- <volist name="fruits" id="vo" key="k"> -->
+				<!-- <tr> -->
+					<!-- <input type="hidden" name="fruits_id[]" value="{$vo.fruits_id}"/> -->
+					<!-- <td>{$k}</td>		 -->
+					<!-- <!-- <td>{$vo.pic}</td>		 --> 
+					<!-- <td>{$vo.name}</td>		 -->
+					<!-- <td>{$vo.price}</td> -->
+					<!-- <td>{$vo.gname}</td>		 -->
+					<!-- <td><button type="button" class="btn btn-default btn-xs" data-fruits_id="{$vo.fruits_id}" data-sell="{$vo.sell}"><if condition="$vo['sell'] eq 1">不出售<else/>出售</if></button></td>		 -->
+					<!-- <td> -->
+						<!-- <a href="{:U('Fruits/edit?id='.$vo['fruits_id'])}" />编辑</a> -->
+						<!-- <a href="{:U('Fruits/del?id='.$vo['fruits_id'])}" onclick="return confirm('是否删除？')"/>删除</a> -->
+					<!-- </td>		 -->
+				<!-- </tr> -->
+		<!-- </volist> -->
+		<!-- </tbody> -->
+	<!-- </table> -->
+	
+	 <ul class="nav nav-tabs" role="tablist">
+		<volist name="group" id="vo" key='k'> 
+			 <li <if condition="$vo['group_id'] eq $group_id">class="active"</if> ><a class="group_name" data-group_id="{$vo.group_id}" href="#" data-toggle="tab">{$vo.name}</a></li>
+		</volist>
+	</ul>
+	<p>&nbsp;</p>
+
+	<div class="tab-content">
+		<table class="table table-bordered table-hover">
+			<thead>
+			<tr>
+				<th>序号</th>	
+				<th>商品名称</th>		
+				<th>商品描述</th>		
+				<th>商品价格</th>		
+				<th>库存</th>
+				<th>状态</th>
+				<th>操作</th>
+			</tr>
+			</thead>
+				<tbody>
+					<volist name="fruits" id="vo" key="k">
+						<tr>
+							<input type="hidden" name="fruits_id[]" value="{$vo.fruits_id}"/>
+							<td>{$k}</td>		
+							<td>{$vo.name}</td>	
+							<td style="width:20%;"> <input type="text" class="remark" data-remark_id="{$vo.fruits_id}" value="{$vo.remark}"/></td>	
+							<td>{$vo.price}</td>
+							<td style="width:20%;"> <input type="text" class="stock" data-id="{$vo.fruits_id}" value="{$vo.stock}"/></td>
+							<td><button type="button" class="btn btn-default btn-xs sell" data-fruits_id="{$vo.fruits_id}" data-sell="{$vo.sell}"> <if condition="$vo['sell'] eq 0">下线<else/>上线</if> </button></td>
+							<td>
+								<a href="{:U('Fruits/edit?id='.$vo['fruits_id'])}" />编辑</a>
+								<a href="{:U('Fruits/del?id='.$vo['fruits_id'])}" onclick="return confirm('是否删除？')"/>删除</a>
+							</td>
+						</tr>
+					</volist>
+			</tbody>
+		</table>
+	</div>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.dragsort-0.5.2.min.js"></script>
+<script type="text/javascript">
+   $(".table tbody").dragsort({
+		dragSelector: "td",
+		dragBetween: false,
+		dragSelectorExclude:'.stock,.sell,a[href],.remark',
+		placeHolderTemplate: "<td></td>"
+	});
+	
+	$(".btn-xs").click(function(){
+		var fruits_id=$(this).data("fruits_id");
+		var sell=$(this).data("sell");
+		var $this=$(this);
+		$.ajax({
+			type:'post',
+			url:'{:U('Fruits/sell')}',
+			data:'fruits_id='+fruits_id+"&sell="+sell,
+			success:function(msg){
+				if(msg==0){
+					$this.text('上线');
+					$this.data("sell",1);
+				}else if(msg==1){
+					$this.text('下线');
+					$this.data("sell",0);
+				}
+			}
+		});
+	});
+	
+	$(".stock").blur(function(){
+		var fruits_id=$(this).data("id");
+		var stock=$(this).val();
+		$.ajax({
+			type:'post',
+			url:'{:U('Fruits/update_stock')}',
+			data:'fruits_id='+fruits_id+'&stock='+stock,
+		});
+	});
+
+	$(".remark").blur(function(){
+		var fruits_id=$(this).data("remark_id");
+		var remark=$(this).val();
+		remark = remark.replace(/\+/g,"%2B");
+		$.ajax({
+			type:'post',
+			url:'{:U('Fruits/update_remark')}',
+			data:'fruits_id='+fruits_id+'&remark='+remark,
+		});
+	});
+	
+	$(".group_name").click(function(){
+		var group_id=$(this).data("group_id");
+		location.href="{:U('group_select')}?group_id="+group_id;
+	});
+</script>	
+</body>
+</html>

@@ -1,0 +1,46 @@
+<include file="Public/header"/>
+<link href="//cdn.bootcss.com/chosen/1.8.2/chosen.min.css" rel="stylesheet">
+<script src="//cdn.bootcss.com/chosen/1.8.2/chosen.jquery.min.js"></script>
+<form action="{:U('Printer/add')}" method="post" role="form">
+		<div class="form-group">
+			<label for="name">打印机名:</label>
+			<input type="text" name="name" class ="form-control"/>
+		</div>
+		<div class="form-group">
+			<label for="partner">partner:</label>
+			<input type="text" name="partner" class ="form-control"/>
+		</div>
+		<div class="form-group">
+			<label for="apikey">apikey:</label>
+			<input type="text" name="apikey" class ="form-control"/>
+		</div>
+		<div class="form-group">
+			<label for="machine_code">machine_code:</label>
+			<input type="text" name="machine_code" class ="form-control"/>
+		</div>
+		<div class="form-group">
+			<label for="msign">msign:</label>
+			<input type="text" name="msign" class ="form-control"/>
+		</div>
+		<div class="form-group">
+			<label for="groups">打印分类:</label>
+			<select name="groups[]" class ="form-control chosen-select" multiple>
+				<volist name="group" id="vo">
+				  <option value ="{$vo.group_id}">{$vo.name}</option>
+				</volist>
+			</select>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" name="is_print" value="1">是否打印总单
+			</label>
+		</div>
+		<input type="submit" value="确定" class="btn btn-default"/>
+	</form>
+<script>
+	$(document).ready(function(){
+		$(".chosen-select").chosen();
+	});
+</script>	
+</body>
+</html>

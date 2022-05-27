@@ -1,0 +1,57 @@
+<include file="Public/header"/>
+	<!-- <form action="{:U('Table/add')}" method="post" role="form"> -->
+		<!-- <div class="form-group"> -->
+			<!-- <label for="xuhao">序号:</label>  -->
+			<!-- <input type="text" name="sort" class ="form-control"/> -->
+		<!-- </div> -->
+		<!-- <div class="form-group"> -->
+			<!-- <label for="zhuohao">桌号:</label>  -->
+			<!-- <input type="text" name="tab_num" class ="form-control"/> -->
+		<!-- </div> -->
+		<!-- <input type="submit" value="确定" class="btn btn-default"/> -->
+	<!-- </form> -->
+	
+	<style>
+	    .input-group{
+			margin:5px;
+		} 
+		.btn-primary{
+			margin-left:10px;
+		}  		
+	</style>
+<h2>批量添加桌号</h2>
+	<div role="form" class="form-inline">	
+		<div class="input-group">
+			<span class="input-group-addon">桌号前缀</span>
+			<input type="text" name="pre" class ="form-control"/>
+		</div>
+		<div class="input-group">
+			<span class="input-group-addon">桌数</span>
+			<input type="text" name="num" class ="form-control"/>
+		</div>
+		<input type="button" value="确定" class="btn btn-default"/>
+	</div> 	</br>
+	<form action="{:U('Table/adds')}" method="post" >
+		<div id="new" role="form" class="form-inline"></div>
+		<div id="save" role="form" class="form-inline"></div>
+	</form>
+	<script>
+	    $(function(){
+			$(".btn").one('click',function(){
+				var pre=$("input[name='pre']").val();
+				var num=$("input[name='num']").val();
+				var reg=/^(-|\+)?\d+$/;
+				if(reg.test(num)){
+					for(var i=1;i<=num;i++){
+						$("#new").append("<div class='input-group'><span class='input-group-addon'>桌数</span><input type='text' name='tab_num[]' class ='form-control' value="+pre+i+" /></div>");
+					}
+					$("#save").append("<div class='input-group'><button type='button' class='btn btn-default'>取消</button><button type='submit' class='btn btn-primary'>保存</button></div>");
+				}else{
+					alert("桌数必须为整数");
+				}
+			});
+		});
+		
+	</script>	
+</body>
+</html>

@@ -1,0 +1,42 @@
+<include file="Public/header"/>
+<a href="{:U('Printer/add')}" class="btn btn-default"/>添加</a> </br></br>
+<table class="table table-bordered table-hover">
+	<thead>
+	<tr>
+		<th>打印机名</th>		
+		<th>partner</th>		
+		<th>apikey</th>		
+		<th>machine_code</th>		
+		<th>msign</th>
+		<th>分类</th>			
+		<th>是否打印总单</th>			
+		<th>操作</th>		
+	</tr>
+	</thead>
+	<tbody>
+	<volist name="printer" id="vo">
+	        <tr>
+	        	<td>{$vo.name}</td>		
+	        	<td>{$vo.partner}</td>		
+	        	<td>{$vo.apikey}</td>		
+	        	<td>{$vo.machine_code}</td>		
+	        	<td>{$vo.msign}</td>
+	        	<td> <if condition="$vo['group_id'] eq ''">未选分类<else/>{$vo.gname}</if> </td>
+				<td>
+					<if condition="$vo['master'] eq 0">
+					    不打印
+					<else/>
+					    打印
+					</if>
+				</td>				
+	        	<td>
+					<a href="{:U('Printer/edit?id='.$vo['id'])}" />编辑</a>
+					<a href="{:U('Printer/del?id='.$vo['id'])}" onclick="return confirm('是否删除？')"/>删除</a>
+				</td>
+	        </tr>
+	</volist>	
+	</tbody>
+</table>
+
+</body>
+</html>

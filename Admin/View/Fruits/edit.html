@@ -1,0 +1,47 @@
+<include file="Public/header"/>
+<link href="//cdn.bootcss.com/chosen/1.8.2/chosen.min.css" rel="stylesheet">
+<script src="//cdn.bootcss.com/chosen/1.8.2/chosen.jquery.min.js"></script>
+	<form action="{:U('Fruits/edit')}" method="post" role="form" enctype="multipart/form-data">
+		<input type="hidden" name="fruits_id" value="{$fruits.fruits_id}"/>
+		<div class="form-group">
+			<label for="name">商品名称:</label>
+			<input type="text" class="form-control" name="name" value="{$fruits.name}"/>
+		</div>
+		<div class="form-group">
+			<label for="price">商品价格:</label>
+			<input type="text" class="form-control" name="price" value="{$fruits.price}"/>
+		</div>
+		<div class="form-group">
+			<label for="price">商品分类:</label>
+			<select name="groups" class="form-control">
+				<volist name="group" id="vo">
+			 	 <option <if condition="$fruits['group_id'] eq $vo['group_id']">selected="selected"</if> value ="{$vo.group_id}">{$vo.name}</option>
+				</volist>
+			</select>	
+		</div>
+		<div class="form-group">
+			<label for="price">商品图片:</label>
+			<if condition="$fruits['pic'] neq ''">
+		   		<img src="/Uploads/{$fruits.pic}" height="100"/> </br></br>
+			</if>
+			<input type="file" name="pic" value="{$fruits.pic}"/>
+			<p style="color:#827d7d;font-size:14px;margin-top:8px;margin-bottom:0;">建议上传尺寸(200*200)</p>
+		</div>
+		<div class="form-group">
+			<label for="select">关联菜品:</label>
+			<select name="menu[]" class="form-control chosen-select" multiple>
+				<volist name="menu" id="vo">
+				  <option value="{$vo.fruits_id}" <if condition="in_array($vo['fruits_id'],$select_menu)">selected="selected"</if> >{$vo.name}</option>
+				</volist>
+			</select>
+		</div>
+		<input type="submit" value="确定" class="btn btn-default"/>
+	</form>
+	
+	<script>
+		$(document).ready(function(){
+			$(".chosen-select").chosen();
+		});
+	</script>
+</body>
+</html>

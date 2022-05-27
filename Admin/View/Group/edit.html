@@ -1,0 +1,11 @@
+<include file="Public/header"/>
+	<form action="{:U(Group/edit)}" method="post" role="form">
+		<div class="form-group">
+			<input type="hidden" name="group_id" value="{$group.group_id}" />
+			<label for="name">类名:</label>
+			<input type="text" class="form-control" name="name" value="{$group.name}"/>
+		 </div>
+		<input type="submit" value="提交" class="btn btn-default"/>
+	</form>
+</body>
+</html>

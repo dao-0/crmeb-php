@@ -1,0 +1,47 @@
+<include file="Public/header"/>
+<a href="{:U('Admin/add')}" class="btn btn-default"/>添加</a> </br></br>
+	<table class="table table-bordered table-hover">
+		<tr>
+			<th>工号</th>		
+			<th>姓名</th>
+			<th>级别</th>
+			<th>微信</th>	
+			<th>操作</th>		
+		</tr>
+		<volist name="admins" id="vo">
+		    <tr>
+		    	<td>{$vo.username}</td>
+		    	<td>{$vo.nickname}</td>
+		    	<td>
+					<switch name="vo['level']">
+					    <case value="0">员工</case>
+					    <case value="1">管理员</case>
+					</switch>
+				</td>
+		    	<td>
+					<notempty name="vo['weixin']">已绑定<else />未绑定</notempty>
+					<notempty name="vo['weixin']"><a href="javascript:void(0);return false;" class="reBindWx" data-uid="{$vo['id']}"/>微信解绑</a></notempty>
+				</td>	
+				<td>
+					<a href="{:U('Admin/edit?id='.$vo['id'])}" />编辑</a>
+					<a href="{:U('Admin/del?id='.$vo['id'])}" onclick="return confirm('是否删除？')"/>删除</a>&emsp;&emsp;
+					<if condition="session('admin.level') eq 2">
+						<a href="{:U('Admin/update?id='.$vo['id'])}"/>修改权限</a>
+					</if>
+				</td>				
+		    </tr>   
+		</volist>		
+	</table>
+	<script type="text/javascript">
+		$('.reBindWx').click(function(){
+			if (confirm('确定解绑微信？')) {
+				var uid=$(this).data('uid');
+				$.get("{:U('reBindWx')}",{uid:uid},function(re){
+					if (re.status) {window.location.reload();}else(alert('失败'));
+				})
+			}
+			return false;
+		});
+	</script>
+</body>
+</html>

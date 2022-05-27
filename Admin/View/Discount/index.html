@@ -1,0 +1,71 @@
+<include file="Public/header"/>
+<form action="{:U('Discount/sorts')}" method="post" >
+<a href="{:U('Discount/add')}" class="btn btn-default"/>添加</a>
+<input type="submit" value="更新排序"  class="btn btn-primary"/> </br></br>
+	<table class="table table-bordered table-hover">
+		<thead>
+		<tr>
+			<th>序号</th>		
+			<th>名称</th>		
+			<th>折扣/折</th>		
+			<th>状态</th>		
+			<th>类型</th>		
+			<th>操作</th>		
+		</tr>
+		</thead>
+		<tbody>
+		<volist name="discount" id="vo" key="k">
+		     <tr>
+			 	<input type="hidden" name="id[]" value="{$vo.id}"/>
+		     	<!-- <td><input type="text" name="group_ids[]" value="{$vo.sort}"/></td>		 -->
+				<td>{$k}</td>	
+		     	<td>{$vo.name}</td>	
+		     	<td>{$vo.discount}</td>	
+		     	<td><button type="button" class="btn btn-default btn-xs state" data-id="{$vo.id}" data-state="{$vo.state}"> <if condition="$vo['state'] eq 0">禁用<else/>开启</if> </button></td>	
+		     	<td>
+					<switch name="vo['type']">
+					    <case value="0">抹零</case>
+					    <case value="1">普通折扣</case>
+					    <case value="2">自算</case>
+						<default />
+					</switch>
+				</td>	
+		     	<td>
+					<a href="{:U('Discount/edit?id='.$vo['id'])}" />编辑</a>
+					<a href="{:U('Discount/del?id='.$vo['id'])}" onclick="return confirm('是否删除？')"/>删除</a>
+				</td>		
+		     </tr> 
+		</volist>
+		</tbody>
+	</table>
+</form>
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.dragsort-0.5.2.min.js"></script>
+<script type="text/javascript">
+   $(".table tbody").dragsort({
+		dragSelector: "td",
+		dragBetween: false,
+		placeHolderTemplate: "<td></td>"
+	});
+	
+	$(".state").click(function(){
+		var id=$(this).data("id");
+		var state=$(this).data("state");
+		$this=$(this);
+		$.ajax({
+			type:'post',
+			url:'{:U('Discount/state')}',
+			data:'id='+id+'&state='+state,
+			success:function(msg){
+				if(state==0){
+					$this.data("state",1);
+					$this.text("开启");
+				}else{
+					$this.data("state",0);
+					$this.text("禁用");
+				}
+			}
+		});
+	});
+</script>	
+</body>
+</html>

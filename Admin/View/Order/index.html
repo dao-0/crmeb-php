@@ -1,0 +1,256 @@
+<include file="Public/header"/>
+<!-- 时间插件 -->
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/datetimepicker.css" />
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/datetimepicker_blue.css" />
+<link rel="stylesheet" href="__PUBLIC__/common/js/datetimepicker/css/dropdown.css" />
+<script src="__PUBLIC__/common/js/datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+<script src="__PUBLIC__/common/js/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
+<!-- 时间插件 -->
+<style type="text/css">
+    .pagename{float: left;}
+    .pagename h1{margin: 0px;}
+    .seltime{width: 200px; display:inline-block; float: right; margin-right: 20px;}
+    .timebox{border:1px solid #ccc; display: inline-block; float: right; border-radius: 4px; padding: 0 10px}
+    .start_time,.end_time{border: none; text-align: center; height: 32px; line-height: 32px; }
+    .end_time{border-right: 1px solid #ccc;}
+    .timebox button{border:none; background: #fff;}
+</style>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<div class="container-fluid">
+    <div class="row main">
+        <div class="col-md-12">
+            <div class="pagename"><h1>订单管理</h1></div>
+            <form method="get" action="" id="fsearch">
+            
+            <div class="timebox"><input class="start_time" placeholder="开始时间" value="{$w.start_time}" type="text" name="start_time" readonly="true">-<input type="text" class="end_time" placeholder="结束时间" name="end_time" value="{$w.end_time}" readonly="true"><button type="submit"> 搜索</button></div>
+
+            <div class="seltime">
+                <select class="form-control selt" name="selt">
+                    <option value='0' <eq name="w.selt" value='0'> selected="selected" </eq>  >快捷操作</option>
+                    <option value='1' <eq name="w.selt" value='1'> selected="selected" </eq>  >今天</option>
+                    <option value='2' <eq name="w.selt" value='2'> selected="selected" </eq> >昨天</option>
+                    <option value='3' <eq name="w.selt" value='3'> selected="selected" </eq>  >前天</option>
+                    <option value='4' <eq name="w.selt" value='4'> selected="selected" </eq>  >本周</option>
+                    <option value='5' <eq name="w.selt" value='5'> selected="selected" </eq>  >上周</option>
+                    <option value='6' <eq name="w.selt" value='6'> selected="selected" </eq> >本月</option>
+                    <option value='7' <eq name="w.selt" value='7'> selected="selected" </eq> >上月</option>
+                    <option value='8' <eq name="w.selt" value='8'> selected="selected" </eq> >最近7天</option>
+                    <option value='9' <eq name="w.selt" value='9'> selected="selected" </eq> >最近30天</option>
+                </select>
+            </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row main">
+        <div class="col-md-12">
+        <table id="example" class="table table-hover table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+            	<th>订单号</th>		
+				<th>桌号</th>		
+				<th>用餐人数</th>		
+				<th>下单时间</th>		
+				<th>结账时间</th>		
+				<th>用餐时间</th>		
+				<th>点菜员工号</th>		
+				<th>收银员工号</th>
+				<th>营业额</th>	
+				<th>实收额</th>
+				<th>支付方式</th>
+				<th>菜品数</th>
+				<th>菜份数</th>	
+				<th>订单状态</th>
+                <th>小票次数</th>
+				<th>备注</th>
+                <th>操作</th>	
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th class="text-center">统计</th>		
+				<th class="text-center">-</th>		
+				<th class="text-center">-</th>		
+				<th class="text-center">-</th>
+                <th class="text-center">-</th>
+                <th class="text-center">-</th>
+                <th class="text-center">-</th>
+				<th class="text-center">-</th>
+				<th class="text-center">{$count.cprice}</th>	
+				<th class="text-center">{$count.cpaid}</th>
+				<th class="text-center">-</th>
+				<th class="text-center">{$count.ccps}</th>
+				<th class="text-center">{$count.ccs}</th>	
+				<th class="text-center">-</th>
+                <th class="text-center">-</th>
+                <th class="text-center">-</th>
+                <th class="text-center">-</th>  
+            </tr>
+        </tfoot>
+        <tbody>
+        	<volist name="orders" id="order">
+            <tr data-order_id="{$order.order_id}" data-toggle="modal" data-target="#Modal" class="trd" data-paid="{$order.paid}" data-remark="{$order.remark}">
+                <td>{$order.order_num}</td>
+                <td>{$order.tab_num}</td>
+                <td>{$order.nums}</td>
+                <td>{$order.order_time}</td>
+                <td>{$order.pay_time}</td>
+                <td> <if condition="$order['cashier_num'] eq ''">用餐中...<else/> <?php echo intval((strtotime($order['pay_time'])-strtotime($order['order_time']))/60); ?>分 </if>  </td>
+                <td>{$order.waiter_num}</td>
+                <td>{$order.cashier_num}</td>
+                <td>{$order.price}</td>
+                <td>{$order.paid}</td>
+                <td>{$order.payway}</td>
+                <td>{$order.cps}</td>
+                <td>{$order.cs}</td>
+                <td>{$order.state}</td>
+                <td>{$order.print_num}</td>
+                <td>{$order.remark}</td>
+                <td class="text-center"><button class="btn btn-primary">查看详情</button></td>
+            </tr>
+            </volist>
+        </tbody>
+    </table>
+ </div>
+    </div>
+</div>
+ <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="ModalLabel">
+					订单详情
+				</h4>
+			</div>
+			<div class="modal-body" >
+				<div class="detailMo"></div>
+            </div>
+			<div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-left printZD" data-dismiss="modal">打印小票</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/getDateRange.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('.selt').change(function(){
+        var val=$(this).val();
+        var st=$('.start_time');
+        var et=$('.end_time');
+        switch(parseInt(val))
+        {
+            case 1:st.val(getCurrentDate);et.val(getCurrentDate);break;
+            case 2:st.val(getYesterdayDate);et.val(getYesterdayDate);break;
+            case 3:st.val(getpdayDate);et.val(getpdayDate);break;
+            case 4:st.val(getWeekStartDate);et.val(getWeekEndDate);break;
+            case 5:st.val(getUpWeekStartDate);et.val(getUpWeekEndDate);break;
+            case 6:st.val(getMonthStartDate);et.val(getMonthEndDate);break;
+            case 7:st.val(getLastMonthStartDate);et.val(getLastMonthEndDate);break;
+            case 8:st.val(getSevenStartDate);et.val(getSevenEndDate);break;
+            case 9:st.val(getThirtyStartDate);et.val(getThirtyEndDate);break;
+            default: return false;break;
+        }
+        $('.start_time,.end_time').datetimepicker('update');
+        $('#fsearch').submit();
+    });
+
+    $('.start_time,.end_time').change(function(){
+        $('.selt option:eq(0)').attr('selected','selected');
+    })
+
+	$('.start_time').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        todayBtn:  1,
+        autoclose:true
+    });
+    $('.end_time').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        todayBtn:  1,
+        autoclose:true
+    });
+	
+    var table =$('#example').DataTable({
+        // lengthMenu: [
+        //     [ 10, 25, 50, -1 ],
+        //     [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+        // ],
+        "order": [[ 3, 'desc' ]],
+        "pageLength": 50,
+    	language: {
+        "sProcessing": "处理中...",
+        "sLengthMenu": "显示 _MENU_ 项结果",
+        "sZeroRecords": "没有匹配结果",
+        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+        "sInfoPostFix": "",
+        "sSearch": "搜索:",
+        "sUrl": "",
+        "sEmptyTable": "表中数据为空",
+        "sLoadingRecords": "载入中...",
+        "sInfoThousands": ",",
+        "oPaginate": {
+            "sFirst": "首页",
+            "sPrevious": "上页",
+            "sNext": "下页",
+            "sLast": "末页"
+        },
+        "oAria": {
+            "sSortAscending": ": 以升序排列此列",
+            "sSortDescending": ": 以降序排列此列"
+        }
+    }
+    });
+
+
+
+    $('body').delegate('.trd','click',function(){
+        $(".detailMo").html("<div class='alert alert-info'>正在加载……</div>");
+        var order_id=$(this).data("order_id");
+		var paid=$(this).data("paid");
+		var remark=$(this).data("remark");
+        $.ajax({
+            type:'post',
+            url:'{:U("Order/ajax_details")}',
+            data:'order_id='+order_id,
+            success:function(msg){
+                $(".detailMo").html("<pre>"+msg+"</pre>");
+                $('.printZD').attr('orderID',order_id);
+				$('.printZD').attr("paid",paid);
+				$('.printZD').attr("remark",remark);
+            }
+        });
+    });
+
+    $('.printZD').click(function(){
+        var order_id=$(this).attr('orderID');
+		var paid=$(this).attr('paid');
+		var remark=$(this).attr('remark');
+
+        if (!order_id) {alert('网络不给力请稍等...'); return false;}
+        $.post('{:U("Order/printer")}',{order_id:order_id,paid:paid,remark:remark},function(msg){
+            console.log(msg);
+            // $('.printZD').attr('orderID','');
+        })
+    });
+
+    $('#Modal').on('hide.bs.modal', function () {
+         $('.printZD').attr('orderID','');
+    });
+});
+</script>
+</body>
+</html>

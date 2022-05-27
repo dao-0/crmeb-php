@@ -1,0 +1,15 @@
+<include file="Public/header"/>
+	<form action="{:U('Table/edit')}" method="post" role="form">
+		<input type="hidden" name="id" value="{$tab.id}" />
+		<div class="form-group">
+			<label for="zhuohao">桌号:</label>
+			<input type="text" class ="form-control" name="tab_num" value="{$tab.tab_num}"/>
+		</div>
+		<div class="form-group">
+			<label for="remark">备注:</label>
+			<input type="text" class ="form-control" name="remark" value="{$tab.remark}"/>
+		</div>
+		<input type="submit" value="提交" class="btn btn-default"/>
+	</form>
+</body>
+</html>
